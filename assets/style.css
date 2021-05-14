@@ -1,0 +1,41 @@
+body {
+    margin: 0%;
+    padding: 0%;
+}
+
+#profile-pic {
+    border-radius: 50%;
+    width: 20%;
+    height: 20%;
+}
+
+#nav-bar {
+    background-color: black;
+    height: 60px;
+    width: 100%;
+    
+}
+
+.nav-items {
+    font-family: 'Source Code Pro', monospace;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
+}
+
+.nav-items:hover{
+    color: greenyellow;
+
+}
+
+
+#hw {
+    font-family: 'Fira Code', monospace;
+}
+
+.text {
+    font-family: 'KoHo', sans-serif;
+}
