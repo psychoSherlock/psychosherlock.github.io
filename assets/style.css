@@ -1,40 +1,70 @@
-body {
-    margin: 0%;
-    padding: 0%;
+:root {
+    font-size: 16px;
+    --text-primary:#E4E6EB;
+    --bg-primary: #18191A;
+    --bg-secondary: #242526;
+    --font-fira: 'Fira Code', monospace ;
+    --font-normal: 'KoHo', sans-serif;
+    --font-nav: 'Source Code Pro', monospace;
 }
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
 
 #profile-pic {
     border-radius: 50%;
     width: 20%;
     height: 20%;
-    margin-left: 50%;
-}
-
-h1 {
-    font-family: 'Fira Code', monospace !important;
-}
-
-.text {
-    font-family: 'KoHo', sans-serif;
-    margin-left: 50%;
 }
 
 
-.nav-items {
+body::-webkit-scrollbar {
+    width: 0.25rem;
+  }
+  
+  body::-webkit-scrollbar-track {
+    background: #1e1e24;
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background: #6649b8;
+  }
+
+main {
+    margin-left: 5rem;
+    padding: 1rem;
+}
+
+.navbar {
+    width: 5rem;
+    height: 100vh;
     position: fixed;
-    background-color: #242526;
+    background-color: var(--bg-secondary);
+    overflow: scroll;
+}
+
+.navbar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    justify-content: space-evenly;
-    width: 13%;
 }
 
-.nav-links {
+.nav-item {width: 100%;}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    height: 5rem;
+    color: var(--text-primary);
     text-decoration: none;
-    font-family: 'Source Code Pro', monospace;
-    color: whitesmoke !important;
+}
+
+.link-text {
+    display: none;
 }
