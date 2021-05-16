@@ -43,7 +43,6 @@ main {
     height: 100vh;
     position: fixed;
     background-color: var(--bg-secondary);
-    overflow: scroll;
 }
 
 .navbar-nav {
@@ -67,4 +66,17 @@ main {
 
 .link-text {
     display: none;
+    margin-left: 1rem;
+}
+
+.material-icons {
+    font-size: 50px !important;
+}
+
+.material-icons:hover {
+    color: rgb(34, 253, 53);
+}
+
+#link {
+    transform: rotate(35deg);
 }
