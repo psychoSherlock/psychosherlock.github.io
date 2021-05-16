@@ -7,35 +7,34 @@ body {
     border-radius: 50%;
     width: 20%;
     height: 20%;
+    margin-left: 50%;
 }
 
-#nav-bar {
-    background-color: black;
-    height: 60px;
-    width: 100%;
-    
-}
-
-.nav-items {
-    font-family: 'Source Code Pro', monospace;
-    text-decoration: none;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    height: 100%;
-}
-
-.nav-items:hover{
-    color: greenyellow;
-
-}
-
-
-#hw {
-    font-family: 'Fira Code', monospace;
+h1 {
+    font-family: 'Fira Code', monospace !important;
 }
 
 .text {
     font-family: 'KoHo', sans-serif;
+    margin-left: 50%;
+}
+
+
+.nav-items {
+    position: fixed;
+    background-color: #242526;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    justify-content: space-evenly;
+    width: 13%;
+}
+
+.nav-links {
+    text-decoration: none;
+    font-family: 'Source Code Pro', monospace;
+    color: whitesmoke !important;
 }
