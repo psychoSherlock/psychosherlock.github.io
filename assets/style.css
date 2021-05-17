@@ -1,44 +1,16 @@
 :root {
     font-size: 16px;
     --text-primary:#E4E6EB;
-    --bg-primary: #18191A;
+    --bg-primary: #3a3b3c;
     --bg-secondary: #242526;
+    --bg-third: #18191A;
     --font-fira: 'Fira Code', monospace ;
     --font-normal: 'KoHo', sans-serif;
     --font-nav: 'Source Code Pro', monospace;
     --transition-speed: 600ms;
-    --nav-hover: #262426;
+    --nav-hover: #df49a6;
 }
-
-body {
-    margin: 0;
-    padding: 0;
-}
-
-
-#profile-pic {
-    border-radius: 50%;
-    width: 20%;
-    height: 20%;
-}
-
-
-body::-webkit-scrollbar {
-    width: 0.25rem;
-  }
-  
-  body::-webkit-scrollbar-track {
-    background: #1e1e24;
-  }
-  
-  body::-webkit-scrollbar-thumb {
-    background: #6649b8;
-  }
-
-main {
-    margin-left: 5rem;
-    padding: 1rem;
-}
+/*👇 Navbar*/
 
 .navbar {
     width: 3rem; /*Change this */
@@ -46,6 +18,7 @@ main {
     position: fixed;
     background-color: var(--bg-secondary);
     transition: width 600ms ease;
+    z-index: 1;
 }
 
 
@@ -73,7 +46,9 @@ main {
 }
 
 .link-text {
-    display: none; /*Change this */
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
     margin-left: 1rem;
     font-family: var(--font-nav);
     color: var(--text-primary);
@@ -85,7 +60,7 @@ main {
 }
 
 .nav-link:hover .material-icons{
-    color: rgb(34, 253, 53);
+    color: var(--nav-hover);
 }
 
 #link {
@@ -104,7 +79,57 @@ main {
 }
 
 .navbar:hover .link-text {
+    color: var(--nav-hover);
     display: inline;
-    transition: var(--transition-speed);
+    visibility: visible;
+    opacity: 1;
+}
+/* ☝️ Navbar */
+
+h1 {
+    font-family: var(--font-fira);
+    color: greenyellow;
 }
 
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-normal);
+    background-color: var(--bg-third);
+}
+
+p {
+    color: var(--text-primary);
+}
+
+#profile-pic {
+    border-radius: 50%;
+    width: 20%;
+    height: 20%;
+}
+
+
+body::-webkit-scrollbar {
+    width: 0.25rem;
+  }
+  
+  body::-webkit-scrollbar-track {
+    background: #1e1e24;
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background: #6649b8;
+  }
+
+main {
+    margin-left: 5rem;
+    padding: 1rem;
+}
+
+
+#poly {
+    text-align: center;
+    clip-path: polygon(50% 0%, 100% 0, 100% 65%, 50% 100%, 0 65%, 0 0);
+    background-color: red;
+}
