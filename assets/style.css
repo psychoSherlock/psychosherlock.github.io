@@ -7,6 +7,7 @@
     --font-normal: 'KoHo', sans-serif;
     --font-nav: 'Source Code Pro', monospace;
     --transition-speed: 600ms;
+    --nav-hover: #262426;
 }
 
 body {
@@ -40,7 +41,7 @@ main {
 }
 
 .navbar {
-    width: 16rem; /*Change this */
+    width: 3rem; /*Change this */
     height: 100vh;
     position: fixed;
     background-color: var(--bg-secondary);
@@ -72,7 +73,7 @@ main {
 }
 
 .link-text {
-    display: inline; /*Change this */
+    display: none; /*Change this */
     margin-left: 1rem;
     font-family: var(--font-nav);
     color: var(--text-primary);
@@ -83,7 +84,7 @@ main {
     font-size: 39px !important;
 }
 
-.material-icons:hover {
+.nav-link:hover .material-icons{
     color: rgb(34, 253, 53);
 }
 
@@ -99,10 +100,11 @@ main {
 }
 
 .navbar:hover {
-    width: 16rem;
+    width: 14rem;
 }
 
 .navbar:hover .link-text {
     display: inline;
+    transition: var(--transition-speed);
 }
 
