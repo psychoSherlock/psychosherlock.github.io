@@ -6,6 +6,7 @@
     --font-fira: 'Fira Code', monospace ;
     --font-normal: 'KoHo', sans-serif;
     --font-nav: 'Source Code Pro', monospace;
+    --transition-speed: 600ms;
 }
 
 body {
@@ -39,16 +40,19 @@ main {
 }
 
 .navbar {
-    width: 5rem;
+    width: 16rem; /*Change this */
     height: 100vh;
     position: fixed;
     background-color: var(--bg-secondary);
+    transition: width 600ms ease;
 }
+
+
 
 .navbar-nav {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 3px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -62,15 +66,21 @@ main {
     height: 5rem;
     color: var(--text-primary);
     text-decoration: none;
+    filter: grayscale(100%) opacity(0.7);
+    transition: var(--transition-speed);
+  
 }
 
 .link-text {
-    display: none;
+    display: inline; /*Change this */
     margin-left: 1rem;
+    font-family: var(--font-nav);
+    color: var(--text-primary);
+    font-size: 22px;
 }
 
 .material-icons {
-    font-size: 50px !important;
+    font-size: 39px !important;
 }
 
 .material-icons:hover {
@@ -80,3 +90,19 @@ main {
 #link {
     transform: rotate(35deg);
 }
+
+
+.nav-link:hover {
+    filter: grayscale(0%) opacity(1);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+}
+
+.navbar:hover {
+    width: 16rem;
+}
+
+.navbar:hover .link-text {
+    display: inline;
+}
+
