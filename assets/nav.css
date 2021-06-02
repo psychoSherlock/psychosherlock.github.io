@@ -17,7 +17,7 @@
     position: fixed;
     background-color: var(--bg-secondary);
     transition: width 600ms ease;
-    z-index: 1;
+    z-index: 100;
 }
 
 
@@ -111,10 +111,12 @@
     display: none;
 }
 
+#meet {
+    font-size: 2em !important;
+    padding-left: 2px;
+}
 
-
-
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 680px) {
     .navbar {
         display: none !important;
     }
