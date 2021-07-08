@@ -44,6 +44,8 @@
   
 }
 
+
+
 .link-text {
     visibility: hidden;
     opacity: 0;
@@ -62,6 +64,10 @@
 .nav-link:hover .material-icons{
     color: var(--nav-hover);
 }
+
+
+
+
 
 #link {
     transform: rotate(35deg);
@@ -84,6 +90,25 @@
     visibility: visible;
     opacity: 1;
 }
+
+
+.icon-active {
+    color: var(--nav-hover);
+}
+.nav-link-active {
+    display: flex;
+    align-items: center;
+    height: 5rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition-speed);
+  
+}
+
+
+
+
+
 
 /* ☝️ Navbar For Desktop*/
 
@@ -117,29 +142,14 @@
 }
 
 @media only screen and (max-width: 680px) {
-    .navbar {
-        display: none !important;
-    }
-    
-    
-    
-    .navbar-nav {
-        display: none !important;
-    }
-    
+    .navbar {display: none !important;}
+    .icon-active{display: none;}
+    .nav-link-active {display: none;}
+    .navbar-nav {display: none !important;}
     .nav-item {display: none !important;}
-    
-    .nav-link {
-        display: none !important;
-    }
-    
-    .link-text {
-        display: none !important;
-    }
-    
-    #link {
-        display: none !important;
-    }
+    .nav-link {display: none !important;}
+    .link-text {display: none !important;}
+    #link {display: none !important;}
 
 
     
