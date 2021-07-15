@@ -9,6 +9,7 @@
     --star-wars:'Do Hyeon', sans-serif;;
     --code: 'Fira Code', monospace;
     --cursive: 'Comic Neue', cursive;
+    --red: #EF3054;
 }
 
 li, a {
@@ -20,7 +21,7 @@ li, a {
 body {
     margin: 0;
     padding: 0;
-    background-color: #52057B;
+    background-color: #24292e;
 
 }
 
@@ -30,21 +31,51 @@ body {
     color: #ffffff;
     font-weight: bolder;
     font-size: 1.6em;
+    margin-right: auto;
+    margin-left: 1em;
+    cursor: pointer;
 }
 
-#nav__container {
+header {
 
     width: 100%;
     height: 5em;
-    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    
+}
+
+nav ul {
+    display: flex;
+    
 }
 
 
-.nav__icons, .nav__text {
-    color:#ffffff;
-    font-size: 1.3em;
-}
-
-.nav__text {
+nav ul li {
     font-family: var(--cursive);
+    display: block;
+    
+    margin: 0 1.3em;
+    cursor: pointer;
+}
+
+
+nav ul li a {
+    color: #ffffff;
+    font-weight: bolder;
+    transition: color 300ms ease;
+}
+
+.nav__icons{
+    font-size: 1.3em;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+
+
+nav ul li:hover * { /*Targetting all elements after li*/
+    color: var(--red);
 }
