@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&family=Do+Hyeon&family=Fira+Code&family=Pangolin&family=Poppins&family=Short+Stack&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
 
 
 
@@ -10,6 +10,7 @@
     --code: 'Fira Code', monospace;
     --cursive: 'Comic Neue', cursive;
     --red: #EF3054;
+    --para-one:'PT Sans', sans-serif;
 }
 
 li, a {
@@ -78,4 +79,39 @@ nav ul li a {
 
 nav ul li:hover * { /*Targetting all elements after li*/
     color: var(--red);
+}
+
+/*----NAV ends here----------*/
+
+
+
+
+p {
+    color:white;
+    font-family: var(--para-one);
+}
+
+#top__disc {
+    margin: 0 3em;
+}
+
+#top__disc img {
+    height: 22em;
+    border: 3px solid white;
+    border-radius: 3%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    cursor: pointer;
+}
+
+#top__disc img:hover {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.top__text {
+    float: right;
+}
+.top__text h1 {
+    color: var(--red);
+    font-family: var(--code);
+    font-size: 4em;
 }
