@@ -2120,3 +2120,27 @@ hr {
   border: 2px solid #dee2e6;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
+
+.project-list {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+}
+
+.project-item a img {
+  transition: transform 200ms ease;
+}
+
+.project-item a img:hover {
+  transform: scale(1.02);
+}
+
+.code-badges {
+  text-align: center;
+  padding: 1em;
+}
+
+.code-badges img {
+  margin: 0.3em;
+}
