@@ -34,7 +34,105 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
 </head>
-<body>
+
+<div class="preloader" id="preloader">
+  <div class="pl1">
+    <div class="pl1__a"></div>
+    <div class="pl1__b"></div>
+    <div class="pl1__c"></div>
+  </div>
+
+</div>
+
+<style>
+  :root {
+  --bg: #e3e4e8;
+  --fg: #17181c;
+  --c1: #f42f25;
+  --c2: #f49725;
+  --c3: #255ff4;
+  --c4: #9725f4;
+  }
+
+  .preloader {
+    
+    background: var(--fg);
+    color: var(--bg);
+    display: flex;
+    flex-wrap: wrap;
+    font: 1em/1.5 sans-serif;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    height: 100vh;
+    z-index: 2147483647;
+  }
+  .pl1{
+  justify-content: space-around;
+}
+.pl1__a, .pl1__b, .pl1__c {
+  border-radius: 50%;
+  width: 1em;
+  height: 1em;
+  transform-origin: 50% 100%;
+}
+
+.pl1__a, .pl1__b, .pl1__c {
+  animation: bounce1 1s linear infinite;
+}
+
+.pl1{
+  display: flex;
+  margin: 1.5em;
+  width: 6em;
+  height: 6em;
+}
+
+.pl1__a{
+  background: var(--c1);
+}
+.pl1__b{
+  background: var(--c2);
+  animation-delay: 0.1s;
+}
+.pl1__c{
+  background: var(--c3);
+  animation-delay: 0.2s;
+}
+
+/* Animations */
+@keyframes bounce1 {
+  from, to {
+    transform: translateY(0) scale(1, 1);
+    animation-timing-function: ease-in;
+  }
+  45% {
+    transform: translateY(5em) scale(1, 1);
+    animation-timing-function: linear;
+  }
+  50% {
+    transform: translateY(5em) scale(1.5, 0.5);
+    animation-timing-function: linear;
+  }
+  55% {
+    transform: translateY(5em) scale(1, 1);
+    animation-timing-function: ease-out;
+  }
+}
+
+</style>
+
+<!-- <script>
+  const body = document.getElementsByTagName('body')[0]
+  body.style.display ='none'
+  window.onload = function(){
+  const preloader = document.getElementById('preloader');
+  // preloader.style.display = 'none';
+  body.style.display ='unset'
+};
+</script> -->
+
+<body >
   <div id="progressbar"></div>
   <div id="scrollPath"></div>
 
