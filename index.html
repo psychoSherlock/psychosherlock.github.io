@@ -662,11 +662,11 @@
               crossOrigin: true,
               success:function (response){
                   alert("Form submitted successfully")
-                  
-                  window.location.href="https://google.com"
+                  window.location.reload()
+                  //window.location.href="https://google.com"
               },
               error:function (err){
-                  alert("Woops! Something went wrong! Please try again..")
+                  alert("Woops! Something went wrong! Please try again.. NOTE: If you are using firefox, and have privacy badger extension installed, please disable it as it blocks CORS request, to proceed")
               }
           })
       })
