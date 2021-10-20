@@ -659,12 +659,11 @@
               url:"https://script.google.com/macros/s/AKfycbxXGZ0Wx4VvV5V34L2vtAGKZtER2BK4w6izWROaKcAAuu017VVVx2W7WnYZfCCBNW95/exec",
               data:$("#contact-form").serialize(),
               method:"POST",
-              dataType: 'jsonp',
               crossOrigin: true,
               success:function (response){
                   alert("Form submitted successfully")
-                  window.location.reload()
-                  //window.location.href="https://google.com"
+                  
+                  window.location.href="https://google.com"
               },
               error:function (err){
                   alert("Woops! Something went wrong! Please try again..")
