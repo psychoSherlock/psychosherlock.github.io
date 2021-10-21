@@ -2119,6 +2119,7 @@ hr {
   height: 80%;
   border: 2px solid #dee2e6;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  object-fit: cover;
 }
 
 .project-list {
