@@ -267,3 +267,20 @@
     });
   });
 })();
+
+const date_api = new Date();
+
+const cyear = date_api.getFullYear();
+const cmonth = date_api.getMonth();
+
+var age = cyear - 2005;
+
+if (cmonth < 11) {
+  age -= 1;
+}
+
+const age_elems = document.getElementsByClassName("my_age");
+
+for (var i = 0; i < age_elems.length; i++) {
+  age_elems[i].textContent = age;
+}
