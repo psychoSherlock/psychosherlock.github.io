@@ -106,3 +106,22 @@
     opacity: 1;
   }
 }
+
+/* Refined fire particles styling */
+.fire-particles {
+  position: fixed; /* Changed to fixed positioning */
+  width: 100%;
+  height: 30%; /* Further reduced height to keep particles very low */
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  opacity: 0.85;
+  mix-blend-mode: screen; /* Use screen blend mode for brighter effect */
+  pointer-events: none; /* Prevent interaction with particles */
+}
+
+/* Ensure boot messages are on top of particles */
+.boot-messages {
+  position: relative;
+  z-index: 2;
+}

@@ -1,8 +1,230 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
 import "../styles/Plymouth.css";
 import gunfireAudio from "../assets/other/gunfire_audio.m4a";
 import gunfireVideo from "../assets/other/gunfire_video.webm";
 import rdrLogo from "../assets/images/cat_rdr_logo.png";
+import Particles from "react-tsparticles";
+import { loadSlim } from "tsparticles-slim";
+
+// Updated fire particle configuration for more realistic movement
+const fireParticlesConfig = {
+  fullScreen: false,
+  fpsLimit: 60,
+  particles: {
+    number: {
+      value: 70, // Increased for denser flame effect
+      density: {
+        enable: true,
+        value_area: 700, // More concentrated
+      },
+    },
+    color: {
+      value: [
+        "#ff2200", // Deep red
+        "#ff4400",
+        "#ff6600",
+        "#ff8800",
+        "#ffaa00",
+        "#ffcc00", // Bright yellow
+        "#ffdd70", // Light yellow for highlights
+      ],
+    },
+    shape: {
+      type: "circle",
+    },
+    opacity: {
+      value: { min: 0.3, max: 0.8 }, // More varied opacity
+      random: true,
+      anim: {
+        enable: true,
+        speed: 0.5,
+        opacity_min: 0.1,
+        sync: false,
+      },
+    },
+    size: {
+      value: { min: 1, max: 3 }, // More varied sizes
+      random: true,
+      anim: {
+        enable: true,
+        speed: 3,
+        size_min: 0.5,
+        sync: false,
+      },
+    },
+    move: {
+      enable: true,
+      speed: { min: 0.8, max: 3 }, // More varied speed
+      direction: "top",
+      random: true,
+      straight: false,
+      out_mode: "destroy",
+      bounce: false,
+      attract: {
+        enable: true, // Adds swirling effect
+        rotateX: 600,
+        rotateY: 1200,
+        factor: 0.1,
+      },
+      path: {
+        enable: true, // Creates smooth paths
+        delay: { value: 0, sync: false },
+        options: {
+          size: 5,
+          draw: false,
+          increment: 0.001,
+        },
+      },
+      trail: {
+        enable: true,
+        length: 3, // Short trail for motion blur
+        fill: { color: "#000000" },
+      },
+      vibrate: true,
+    },
+    rotate: {
+      value: { min: 0, max: 45 },
+      random: true,
+      direction: "random",
+      animation: {
+        enable: true,
+        speed: 1,
+        sync: false,
+      },
+    },
+    life: {
+      duration: {
+        value: { min: 8, max: 15 }, // Increased lifetime values
+        random: true,
+      },
+      count: 1,
+    },
+    roll: {
+      enable: true,
+      speed: { min: 5, max: 10 },
+    },
+    tilt: {
+      enable: true,
+      value: { min: 0, max: 20 },
+      animation: {
+        enable: true,
+        speed: 5,
+        sync: false,
+      },
+      direction: "random",
+    },
+  },
+  emitters: [
+    {
+      position: { x: 10, y: 100 },
+      rate: { quantity: 5, delay: 0.1 },
+      size: { width: 25, height: 0 },
+      particles: {
+        color: { value: ["#ff2200", "#ff4400"] }, // Deeper reds
+        move: { direction: "top-right", angle: { offset: 0, value: 55 } },
+        size: { value: { min: 1, max: 3 } },
+        opacity: { value: { min: 0.3, max: 0.7 } },
+        life: {
+          duration: {
+            value: { min: 7, max: 14 }, // Specific lifetime for this emitter
+          },
+        },
+      },
+    },
+    {
+      position: { x: 30, y: 100 },
+      rate: { quantity: 4, delay: 0.12 },
+      size: { width: 25, height: 0 },
+      particles: {
+        color: { value: ["#ff4400", "#ff6600", "#ff8800"] },
+        move: { direction: "top", angle: { offset: 0, value: 25 } },
+      },
+    },
+    {
+      position: { x: 50, y: 100 },
+      rate: { quantity: 5, delay: 0.08 },
+      size: { width: 30, height: 0 },
+      particles: {
+        color: { value: ["#ff6600", "#ff8800", "#ffaa00"] }, // Orange-yellow
+        move: { direction: "top" },
+        size: { value: { min: 2, max: 5 } }, // Slightly larger
+      },
+    },
+    {
+      position: { x: 70, y: 100 },
+      rate: { quantity: 4, delay: 0.12 },
+      size: { width: 25, height: 0 },
+      particles: {
+        color: { value: ["#ff8800", "#ffaa00", "#ffcc00"] },
+        move: { direction: "top", angle: { offset: 0, value: -25 } },
+      },
+    },
+    {
+      position: { x: 90, y: 100 },
+      rate: { quantity: 5, delay: 0.1 },
+      size: { width: 25, height: 0 },
+      particles: {
+        color: { value: ["#ffaa00", "#ffcc00", "#ffdd70"] }, // Yellows
+        move: { direction: "top-left", angle: { offset: 0, value: -55 } },
+        size: { value: { min: 1, max: 3 } },
+        opacity: { value: { min: 0.3, max: 0.7 } },
+      },
+    },
+  ],
+  background: {
+    color: "#000000",
+  },
+  detectRetina: true,
+  interactions: {
+    events: {
+      onhover: { enable: false },
+      onclick: { enable: false },
+      resize: true,
+    },
+  },
+};
+
+// Fix the FireParticles component cleanup
+const FireParticles = () => {
+  const [initialized, setInitialized] = useState(false);
+  const particlesRef = useRef(null);
+  const containerId = "fire-particles";
+
+  useEffect(() => {
+    const initParticles = async () => {
+      try {
+        if (!particlesRef.current) {
+          await loadSlim(window.tsParticles);
+          particlesRef.current = await window.tsParticles.load(
+            containerId,
+            fireParticlesConfig
+          );
+          setInitialized(true);
+        }
+      } catch (error) {
+        console.error("Failed to initialize particles:", error);
+      }
+    };
+
+    initParticles();
+
+    // Proper cleanup for tsParticles
+    return () => {
+      try {
+        // Get the container and destroy it directly if it exists
+        const container = window.tsParticles.dom().findById(containerId);
+        if (container) {
+          container.destroy();
+        }
+      } catch (error) {
+        console.error("Error cleaning up particles:", error);
+      }
+    };
+  }, []);
+
+  // Return a static div that will be the container for particles
+  return <div id={containerId} className="fire-particles" />;
+};
 
 export default function Plymouth() {
   const [loading, setLoading] = useState(true);
@@ -104,36 +326,67 @@ export default function Plymouth() {
 
   // Preload the media files
   useEffect(() => {
-    // Force preload of video
-    const videoElement = document.createElement("video");
-    videoElement.src = gunfireVideo;
-    videoElement.preload = "auto";
-    videoElement.muted = true;
-    videoElement.style.display = "none";
-    document.body.appendChild(videoElement);
+    // Video element variables
+    let videoElement = null;
+    let videoAttached = false;
 
-    videoElement.addEventListener("canplaythrough", () => {
-      setResourcesLoaded((prev) => ({ ...prev, video: true }));
-      document.body.removeChild(videoElement);
-    });
+    // Audio element variables
+    let audioElement = null;
+    let audioAttached = false;
 
-    // Force preload of audio
-    const audioElement = document.createElement("audio");
-    audioElement.src = gunfireAudio;
-    audioElement.preload = "auto";
-    audioElement.style.display = "none";
-    document.body.appendChild(audioElement);
+    try {
+      // Force preload of video
+      videoElement = document.createElement("video");
+      videoElement.src = gunfireVideo;
+      videoElement.preload = "auto";
+      videoElement.muted = true;
+      videoElement.style.display = "none";
+      document.body.appendChild(videoElement);
+      videoAttached = true;
 
-    audioElement.addEventListener("canplaythrough", () => {
-      setResourcesLoaded((prev) => ({ ...prev, audio: true }));
-      document.body.removeChild(audioElement);
-    });
+      videoElement.addEventListener("canplaythrough", () => {
+        setResourcesLoaded((prev) => ({ ...prev, video: true }));
+        if (videoAttached && document.body.contains(videoElement)) {
+          document.body.removeChild(videoElement);
+          videoAttached = false;
+        }
+      });
+
+      // Force preload of audio
+      audioElement = document.createElement("audio");
+      audioElement.src = gunfireAudio;
+      audioElement.preload = "auto";
+      audioElement.style.display = "none";
+      document.body.appendChild(audioElement);
+      audioAttached = true;
+
+      audioElement.addEventListener("canplaythrough", () => {
+        setResourcesLoaded((prev) => ({ ...prev, audio: true }));
+        if (audioAttached && document.body.contains(audioElement)) {
+          document.body.removeChild(audioElement);
+          audioAttached = false;
+        }
+      });
+    } catch (error) {
+      console.error("Error in media preloading:", error);
+    }
 
     return () => {
-      if (document.body.contains(videoElement)) {
+      // Safe cleanup for video element
+      if (
+        videoAttached &&
+        videoElement &&
+        document.body.contains(videoElement)
+      ) {
         document.body.removeChild(videoElement);
       }
-      if (document.body.contains(audioElement)) {
+
+      // Safe cleanup for audio element
+      if (
+        audioAttached &&
+        audioElement &&
+        document.body.contains(audioElement)
+      ) {
         document.body.removeChild(audioElement);
       }
     };
@@ -202,6 +455,9 @@ export default function Plymouth() {
     <div className="plymouth-container">
       {loading ? (
         <div className="boot-screen">
+          {/* Force stable rendering with permanent key */}
+          <FireParticles key="static-fire-particles" />
+
           <div className="boot-messages">
             {bootMessages.map((msg) => (
               <div key={msg.id} className="boot-message">
