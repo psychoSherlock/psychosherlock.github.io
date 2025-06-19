@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, memo } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Plymouth.css";
 import gunfireAudio from "../assets/other/gunfire_audio.m4a";
 import gunfireVideo from "../assets/other/gunfire_video.webm";
@@ -12,10 +13,10 @@ const fireParticlesConfig = {
   fpsLimit: 60,
   particles: {
     number: {
-      value: 70, // Increased for denser flame effect
+      value: 80, // Increased from 70 for more particles
       density: {
         enable: true,
-        value_area: 700, // More concentrated
+        value_area: 700,
       },
     },
     color: {
@@ -94,7 +95,7 @@ const fireParticlesConfig = {
     },
     life: {
       duration: {
-        value: { min: 8, max: 15 }, // Increased lifetime values
+        value: { min: 8, max: 18 }, // Increased max lifetime to allow higher rise
         random: true,
       },
       count: 1,
@@ -232,9 +233,12 @@ export default function Plymouth() {
   const [resourcesLoaded, setResourcesLoaded] = useState({
     audio: false,
     video: false,
+    image: false, // Added image loading state
   });
   const [allMessagesDisplayed, setAllMessagesDisplayed] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
+  const [audioEnded, setAudioEnded] = useState(false);
+  const navigate = useNavigate();
 
   const audioRef = useRef(null);
   const videoRef = useRef(null);
@@ -326,13 +330,14 @@ export default function Plymouth() {
 
   // Preload the media files
   useEffect(() => {
-    // Video element variables
+    // Video and audio variables
     let videoElement = null;
     let videoAttached = false;
-
-    // Audio element variables
     let audioElement = null;
     let audioAttached = false;
+
+    // Image preload variable
+    let imageLoaded = false;
 
     try {
       // Force preload of video
@@ -367,8 +372,25 @@ export default function Plymouth() {
           audioAttached = false;
         }
       });
+
+      // Force preload of cat logo image
+      const imageElement = new Image();
+      imageElement.src = rdrLogo;
+
+      imageElement.onload = () => {
+        setResourcesLoaded((prev) => ({ ...prev, image: true }));
+        imageLoaded = true;
+      };
+
+      imageElement.onerror = (error) => {
+        console.error("Error preloading image:", error);
+        // Still mark as loaded to avoid blocking the sequence
+        setResourcesLoaded((prev) => ({ ...prev, image: true }));
+      };
     } catch (error) {
       console.error("Error in media preloading:", error);
+      // Mark resources as loaded in case of error to avoid blocking the app
+      setResourcesLoaded({ audio: true, video: true, image: true });
     }
 
     return () => {
@@ -397,6 +419,7 @@ export default function Plymouth() {
     if (
       resourcesLoaded.audio &&
       resourcesLoaded.video &&
+      resourcesLoaded.image && // Added image check
       allMessagesDisplayed
     ) {
       setTimeout(() => {
@@ -427,6 +450,34 @@ export default function Plymouth() {
       }
     };
   }, [loading]); // Only run when loading state changes
+
+  // Add audio end event listener and navigation
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    const handleAudioEnd = () => {
+      console.log("Audio playback ended");
+      setAudioEnded(true);
+
+      // Wait 1 second, then navigate to /desktop
+      setTimeout(() => {
+        console.log("Navigating to desktop...");
+        navigate("/desktop");
+      }, 1000);
+    };
+
+    if (audio) {
+      console.log("Attaching audio end event listener");
+      audio.addEventListener("ended", handleAudioEnd);
+    }
+
+    return () => {
+      if (audio) {
+        console.log("Removing audio end event listener");
+        audio.removeEventListener("ended", handleAudioEnd);
+      }
+    };
+  }, [navigate, loading]); // Added loading as dependency to ensure this runs after audio element is available
 
   // Start synchronized playback
   const startPlayback = () => {
@@ -497,7 +548,11 @@ export default function Plymouth() {
             </div>
           )}
           {/* Keep audio outside of conditional rendering to prevent it from stopping */}
-          <audio ref={audioRef} preload="auto">
+          <audio
+            ref={audioRef}
+            preload="auto"
+            // Remove the onEnded prop to avoid conflicting with the useEffect listener
+          >
             <source src={gunfireAudio} type="audio/mp4" />
             Your browser does not support the audio tag.
           </audio>
