@@ -1,0 +1,87 @@
+/* Desktop Skills Icons Styling */
+.desktop-skills-icons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 20px;
+  padding: 40px;
+  max-width: 800px;
+  pointer-events: auto;
+}
+
+.desktop-skill-icon {
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.skill-icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.desktop-skill-icon img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.skill-name {
+  margin-top: 5px;
+  color: white;
+  font-size: 12px;
+  opacity: 0.7;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  transition: opacity 0.2s ease;
+}
+
+/* Hover effects */
+.desktop-skill-icon:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+.desktop-skill-icon:hover .skill-icon-wrapper {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.desktop-skill-icon:hover img {
+  transform: translateY(-5px);
+}
+
+.desktop-skill-icon:hover .skill-name {
+  opacity: 1;
+}
+
+/* Active/click effect */
+.desktop-skill-icon:active {
+  transform: scale(0.95);
+}
