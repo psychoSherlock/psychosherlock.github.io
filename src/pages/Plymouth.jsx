@@ -4,7 +4,6 @@ import "../styles/Plymouth.css";
 import gunfireAudio from "../assets/other/gunfire_audio.m4a";
 import gunfireVideo from "../assets/other/gunfire_video.webm";
 import rdrLogo from "../assets/images/cat_rdr_logo.png";
-import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 
 // Updated fire particle configuration for more realistic movement
@@ -254,16 +253,16 @@ export default function Plymouth() {
       { message: "Loading audio driver...", delay: 700 },
       { message: "Loading video driver...", delay: 600 },
       {
-        message: "Loading gunfire_audio.m4a...",
+        message: "Loading audio driver...",
         delay: 800,
         resource: "audio",
       },
       {
-        message: "Loading gunfire_video.mp4...",
+        message: "Loading video driver...",
         delay: 1000,
         resource: "video",
       },
-      { message: "Initializing playback...", delay: 800 },
+      { message: "Initializing plymouth...", delay: 800 },
     ];
 
     let timeoutIds = [];

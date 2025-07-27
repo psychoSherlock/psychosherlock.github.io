@@ -8,9 +8,12 @@ export default function Boot() {
   const [selectedOption, setSelectedOption] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("Loading GRUB...");
+  const [timeLeft, setTimeLeft] = useState(3);
+  const [autoBootEnabled, setAutoBootEnabled] = useState(true);
   const totalOptions = 3;
   const backgroundImageRef = useRef(null);
   const navigate = useNavigate();
+  const timerRef = useRef(null);
 
   // Simplified loading sequence
   useEffect(() => {
@@ -20,7 +23,7 @@ export default function Boot() {
 
     // Add a typing effect for the loading text
     let charIndex = 0;
-    const fullText = "Loading GRUB boot menu...";
+    const fullText = "Loading GRUB...";
 
     const typingInterval = setInterval(() => {
       if (charIndex < fullText.length) {
@@ -42,11 +45,34 @@ export default function Boot() {
     return () => clearInterval(typingInterval);
   }, []);
 
+  // Add auto-boot timer
+  useEffect(() => {
+    if (loading || !autoBootEnabled) return;
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          navigate("/plymouth");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timerRef.current);
+  }, [loading, autoBootEnabled, navigate]);
+
   // Keyboard navigation for boot options
   useEffect(() => {
     if (loading) return; // Don't process keyboard input during loading
 
     const handleKeyDown = (event) => {
+      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        setAutoBootEnabled(false);
+        clearInterval(timerRef.current);
+      }
+
       switch (event.key) {
         case "ArrowUp":
           setSelectedOption((prev) => (prev > 0 ? prev - 1 : prev));
@@ -96,6 +122,9 @@ export default function Boot() {
 
           <div className="boot-menu">
             <h2 className="boot-title">GRUB BOOTLOADER</h2>
+            {autoBootEnabled && (
+              <div className="boot-timer">Booting in {timeLeft} seconds...</div>
+            )}
 
             <div className="boot-options">
               <div
@@ -121,7 +150,7 @@ export default function Boot() {
               >
                 <FaCog className="boot-icon" />
                 <span>
-                  Advanced Options for psychoSherlock
+                  Advanced Options
                   {selectedOption === 1 && (
                     <span className="blinking-underscore">_</span>
                   )}

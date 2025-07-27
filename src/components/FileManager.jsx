@@ -59,11 +59,9 @@ const FileManager = () => {
     setCurrentPath(path);
 
     if (historyIndex < history.length - 1) {
-      // If we're not at the end of history, trim future history
       setHistory([...history.slice(0, historyIndex + 1), path]);
       setHistoryIndex(historyIndex + 1);
     } else {
-      // Otherwise just add to history
       setHistory([...history, path]);
       setHistoryIndex(history.length);
     }
@@ -86,7 +84,6 @@ const FileManager = () => {
   const navigateUp = () => {
     const pathParts = currentPath.split("/");
     if (pathParts.length > 2) {
-      // Don't go above /home/user
       pathParts.pop();
       const parentPath = pathParts.join("/");
       navigateTo(parentPath);
@@ -100,7 +97,6 @@ const FileManager = () => {
 
     const newFolderPath = `${currentPath}/${folderName}`;
 
-    // Update current directory
     const updatedFileSystem = { ...fileSystem };
     if (
       !updatedFileSystem[currentPath].items.some(
@@ -112,7 +108,6 @@ const FileManager = () => {
         type: "folder",
       });
 
-      // Create the new folder entry
       updatedFileSystem[newFolderPath] = {
         type: "folder",
         name: folderName,
