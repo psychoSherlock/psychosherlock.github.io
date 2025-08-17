@@ -352,3 +352,40 @@
   scrollbar-width: thin;
   scrollbar-color: var(--htb-selection) var(--htb-current-line);
 }
+
+/* PDF file styling */
+.file-item.pdf-file .file-icon {
+  color: #ff5555;
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdf-icon {
+  background-color: rgba(255, 85, 85, 0.1);
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 85, 85, 0.3);
+  width: 40px;
+  height: 40px;
+  font-size: 28px;
+}
+
+.file-item.pdf-file:hover .pdf-icon {
+  background-color: rgba(255, 85, 85, 0.2);
+  border-color: rgba(255, 85, 85, 0.5);
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+.file-item.pdf-file .file-name {
+  color: var(--htb-foreground);
+}
+
+.file-item.pdf-file:hover .file-name {
+  color: #ff5555;
+}

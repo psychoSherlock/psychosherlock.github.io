@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./FileManager.css"; // Import the CSS file
-import { useImageViewer } from "../context/ImageViewerContext"; // Import the context hook
+import { useImageViewer } from "../context/ImageViewerContext"; // Import the image context hook
+import { usePdfViewer } from "../context/PDFViewerContext"; // Import the PDF context hook
 // Import images from your project
 import exploitXImage from "../assets/images/achievements/ExploitX_CIT_02_Aug_25.JPG";
 import catRdrLogo from "../assets/images/cat_rdr_logo.png";
@@ -10,6 +11,14 @@ import arthurGun from "../assets/images/arthur-gun.png";
 import meCowboy from "../assets/images/personal/me_cowboy.jpeg";
 import meHacker from "../assets/images/personal/me-hacker.jpg";
 import mePortrait from "../assets/images/personal/me.jpeg";
+
+// Import PDF files from Documents folder
+import appreciationPdf from "../assets/Documents/April 2023 - Note of Appreciation .pdf";
+import resumePdf from "../assets/Documents/ATHULPRAKASHNJ_RESUME.pdf";
+import appSecPdf from "../assets/Documents/AthulPrakashNj-CertifiedAppSecPractitioner.pdf";
+import dmMeetupPdf from "../assets/Documents/DM_Meetup.pdf";
+import freshmanFirewallPdf from "../assets/Documents/Freshman_Firewall.pdf";
+import resumeNewPdf from "../assets/Documents/resume_new.pdf";
 
 // Import wallpaper images from Wallpappers folder
 import kali2Img from "../assets/images/Wallpappers/kali_2.png";
@@ -165,6 +174,11 @@ const isImageFile = (filename) => {
   );
 };
 
+// Helper function to check if a file is a PDF
+const isPdfFile = (filename) => {
+  return filename.toLowerCase().endsWith(".pdf");
+};
+
 // Helper to get image path for thumbnails
 const getImagePath = (path, filename) => {
   // Map filenames to imported assets
@@ -203,14 +217,33 @@ const getImagePath = (path, filename) => {
   return imageMap[filename] || null;
 };
 
+// Helper to get PDF path for the PDF viewer
+const getPdfPath = (path, filename) => {
+  // Map filenames to imported PDF assets
+  const pdfMap = {
+    "April 2023 - Note of Appreciation .pdf": appreciationPdf,
+    "ATHULPRAKASHNJ_RESUME.pdf": resumePdf,
+    "AthulPrakashNj-CertifiedAppSecPractitioner.pdf": appSecPdf,
+    "DM_Meetup.pdf": dmMeetupPdf,
+    "Freshman_Firewall.pdf": freshmanFirewallPdf,
+    "resume_new.pdf": resumeNewPdf,
+    "Resume.pdf": resumePdf, // For the one in the root Documents folder
+  };
+
+  return pdfMap[filename] || null;
+};
+
 const FileManager = () => {
   const [currentPath, setCurrentPath] = useState("/home/user");
   const [history, setHistory] = useState(["/home/user"]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Use the image viewer context instead of local state
+  // Use the image viewer context
   const { openImageViewer } = useImageViewer();
+
+  // Use the PDF viewer context
+  const { openPdfViewer } = usePdfViewer();
 
   // Mock file system data with your actual project images
   const [fileSystem, setFileSystem] = useState({
@@ -223,8 +256,7 @@ const FileManager = () => {
         { name: "Pictures", type: "folder" },
         { name: "Downloads", type: "folder" },
         { name: "Projects", type: "folder" },
-        { name: "notes.txt", type: "file" },
-        { name: "todo.md", type: "file" },
+        { name: "Resume.pdf", type: "file" },
       ],
     },
     "/home/user/Desktop": {
@@ -238,8 +270,15 @@ const FileManager = () => {
       name: "Documents",
       items: [
         { name: "Resume.pdf", type: "file" },
-        { name: "Work", type: "folder" },
-        { name: "Personal", type: "folder" },
+        { name: "April 2023 - Note of Appreciation .pdf", type: "file" },
+        { name: "ATHULPRAKASHNJ_RESUME.pdf", type: "file" },
+        {
+          name: "AthulPrakashNj-CertifiedAppSecPractitioner.pdf",
+          type: "file",
+        },
+        { name: "DM_Meetup.pdf", type: "file" },
+        { name: "Freshman_Firewall.pdf", type: "file" },
+        { name: "resume_new.pdf", type: "file" },
       ],
     },
     "/home/user/Pictures": {
@@ -445,6 +484,12 @@ const FileManager = () => {
       if (imagePath) {
         openImageViewer(imagePath);
       }
+    } else if (item.type === "file" && isPdfFile(item.name)) {
+      // Open PDF viewer for PDF files using the context
+      const pdfPath = getPdfPath(currentPath, item.name);
+      if (pdfPath) {
+        openPdfViewer(pdfPath);
+      }
     } else if (item.type === "desktop-icon" && item.url) {
       // Open URL for desktop icons
       openExternalLink(item.url);
@@ -498,13 +543,14 @@ const FileManager = () => {
 
     // Handle regular files and folders
     const isImage = item.type === "file" && isImageFile(item.name);
+    const isPdf = item.type === "file" && isPdfFile(item.name);
     const imagePath = isImage ? getImagePath(currentPath, item.name) : null;
 
     return (
       <div
         className={`file-item ${item.type} ${
           selectedItem === item.name ? "selected" : ""
-        }`}
+        } ${isPdf ? "pdf-file" : ""}`}
         onClick={() => handleItemClick(item)}
         onDoubleClick={() => handleItemDoubleClick(item)}
       >
@@ -517,6 +563,8 @@ const FileManager = () => {
               width="40"
               height="40"
             />
+          ) : isPdf ? (
+            <span className="pdf-icon">📄</span>
           ) : item.type === "folder" ? (
             "📁"
           ) : (
