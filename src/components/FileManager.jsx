@@ -432,8 +432,16 @@ const FileManager = () => {
     } else if (item.type === "file" && isImageFile(item.name)) {
       // Open image viewer for image files using the context
       const imagePath = getImagePath(currentPath, item.name);
+      
+      // Get all sibling images in the same folder for navigation
+      const currentFolderItems = fileSystem[currentPath].items;
+      const siblingImages = currentFolderItems
+        .filter((i) => i.type === "file" && isImageFile(i.name))
+        .map((i) => getImagePath(currentPath, i.name))
+        .filter((path) => path !== null); // Filter out any that failed to resolve
+        
       if (imagePath) {
-        openImageViewer(imagePath);
+        openImageViewer(imagePath, siblingImages);
       }
     } else if (item.type === "file" && isPdfFile(item.name)) {
       // Open PDF viewer for PDF files using the context

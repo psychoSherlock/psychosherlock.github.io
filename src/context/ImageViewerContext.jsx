@@ -7,25 +7,37 @@ const ImageViewerContext = createContext();
 // Provider component that will wrap the app
 export const ImageViewerProvider = ({ children }) => {
   const [viewingImage, setViewingImage] = useState(null);
+  const [siblingImages, setSiblingImages] = useState([]);
 
-  // Function to open the image viewer with a specific image
-  const openImageViewer = (imagePath) => {
+  // Function to open the image viewer with a specific image and optional siblings
+  const openImageViewer = (imagePath, siblings = []) => {
     setViewingImage(imagePath);
+    setSiblingImages(siblings);
   };
 
   // Function to close the image viewer
   const closeImageViewer = () => {
     setViewingImage(null);
+    setSiblingImages([]);
   };
 
   return (
     <ImageViewerContext.Provider
-      value={{ viewingImage, openImageViewer, closeImageViewer }}
+      value={{
+        viewingImage,
+        siblingImages,
+        openImageViewer,
+        closeImageViewer,
+      }}
     >
       {children}
       {/* Render the ImageViewer outside of any component hierarchy */}
       {viewingImage && (
-        <ImageViewer image={viewingImage} onClose={closeImageViewer} />
+        <ImageViewer
+          image={viewingImage}
+          siblings={siblingImages}
+          onClose={closeImageViewer}
+        />
       )}
     </ImageViewerContext.Provider>
   );

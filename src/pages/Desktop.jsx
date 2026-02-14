@@ -110,10 +110,10 @@ const Window = ({
   isActive,
   zIndex,
   isMinimized,
+  isClosing,
 }) => {
-  const [position, setPosition] = useState(
-    initialPosition || { x: 100, y: 100 }
-  );
+  const initPos = initialPosition || { x: 100, y: 100 };
+  const [position, setPosition] = useState(initPos);
   const [size, setSize] = useState(initialSize || { width: 400, height: 300 });
   const [isDragging, setIsDragging] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -126,15 +126,23 @@ const Window = ({
   // Handle window maximize/restore
   const toggleMaximize = () => {
     if (!isMaximized) {
-      // Save current position and size before maximizing
-      setPreviousPosition({ ...position });
+      // Save current position before maximizing
+      const el = windowRef.current;
+      if (el) {
+        // Read the actual rendered transform so we capture drag-moved positions
+        const style = window.getComputedStyle(el);
+        const matrix = new DOMMatrix(style.transform);
+        setPreviousPosition({ x: matrix.m41, y: matrix.m42 });
+      } else {
+        setPreviousPosition({ ...position });
+      }
       setPreviousSize({ ...size });
       setIsMaximized(true);
     } else {
-      setIsMaximized(false);
-      // Restore previous position and size if available
-      if (previousPosition) setPosition(previousPosition);
+      const restorePos = previousPosition || { ...position };
+      setPosition(restorePos);
       if (previousSize) setSize(previousSize);
+      setIsMaximized(false);
     }
   };
 
@@ -144,7 +152,6 @@ const Window = ({
   };
 
   useEffect(() => {
-    // Set drag constraints to desktop bounds
     const updateConstraints = () => {
       if (windowRef.current && !isMaximized) {
         const desktop = windowRef.current.parentElement;
@@ -164,7 +171,6 @@ const Window = ({
     return () => window.removeEventListener("resize", updateConstraints);
   }, [isMaximized]);
 
-  // Enhanced dragging functionality
   const onDragStart = () => {
     if (!isMaximized) {
       setIsDragging(true);
@@ -172,46 +178,79 @@ const Window = ({
     }
   };
 
-  const onDragEnd = () => {
+  const handleDragEnd = (event, info) => {
     setIsDragging(false);
+    // Sync position state with where framer-motion actually placed the element
+    setPosition((prev) => ({
+      x: prev.x + info.offset.x,
+      y: prev.y + info.offset.y,
+    }));
   };
 
-  // Animation variants for minimize/maximize
+  // Determine the current animation target
+  const getAnimateState = () => {
+    if (isClosing) return "exit";
+    if (isMinimized) return "minimized";
+    if (isMaximized) return "maximized";
+    return "normal";
+  };
+
+  // Animation variants — position.x/y are always the source of truth for "normal"
   const windowVariants = {
-    maximized: {
-      x: 0,
-      y: 0,
-      width: "100%",
-      height: "100%",
-      transition: { duration: 0.3, ease: "easeInOut" },
-    },
-    normal: {
+    initial: {
+      opacity: 0,
+      scale: 0.75,
       x: position.x,
       y: position.y,
       width: size.width,
       height: size.height,
-      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    normal: {
+      opacity: 1,
+      scale: 1,
+      x: position.x,
+      y: position.y,
+      width: size.width,
+      height: size.height,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 25,
+        mass: 0.8,
+      },
+    },
+    maximized: {
+      opacity: 1,
+      scale: 1,
+      x: 0,
+      y: 0,
+      width: "100%",
+      height: "100%",
+      transition: {
+        type: "spring",
+        stiffness: 250,
+        damping: 28,
+      },
     },
     minimized: {
-      y: window.innerHeight,
       opacity: 0,
-      scale: 0.5,
-      transition: { duration: 0.3, ease: "easeInOut" },
+      scale: 0.3,
+      y: window.innerHeight - 80,
+      x: window.innerWidth / 2 - 40,
+      transition: {
+        duration: 0.35,
+        ease: [0.4, 0, 0.2, 1],
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.7,
+      transition: {
+        duration: 0.25,
+        ease: [0.4, 0, 1, 1],
+      },
     },
   };
-
-  // If window is minimized, render with minimized animation
-  if (isMinimized) {
-    return (
-      <motion.div
-        initial="normal"
-        animate="minimized"
-        variants={windowVariants}
-        className="window"
-        style={{ zIndex }}
-      />
-    );
-  }
 
   return (
     <motion.div
@@ -219,24 +258,32 @@ const Window = ({
       className={`window ${isActive ? "active" : ""} ${
         isMaximized ? "maximized" : ""
       }`}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={isMaximized ? "maximized" : "normal"}
       variants={windowVariants}
-      exit={{ opacity: 0, scale: 0.9 }}
+      initial="initial"
+      animate={getAnimateState()}
+      exit="exit"
+      onAnimationComplete={(definition) => {
+        if (definition === "exit") {
+          // Actual removal happens via onExitComplete on AnimatePresence
+        }
+      }}
       style={{
         zIndex,
         backgroundColor: "rgba(30, 30, 30, 0.95)",
         border: "1px solid #444",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+        boxShadow: isActive
+          ? "0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(159,239,0,0.15)"
+          : "0 4px 20px rgba(0,0,0,0.5)",
         position: "absolute",
+        pointerEvents: isMinimized || isClosing ? "none" : "auto",
       }}
       onMouseDown={() => onFocus(id)}
-      drag={!isMaximized}
+      drag={!isMaximized && !isMinimized && !isClosing}
       dragConstraints={dragConstraints}
       dragElastic={0}
       dragMomentum={false}
       onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
+      onDragEnd={handleDragEnd}
       dragListener={true}
       dragPropagation={false}
     >
@@ -277,7 +324,8 @@ export default function Desktop() {
   const [windows, setWindows] = useState([]);
   const [activeWindowId, setActiveWindowId] = useState(null);
   const [highestZIndex, setHighestZIndex] = useState(100);
-  const [minimizedWindows, setMinimizedWindows] = useState([]); // Track minimized windows
+  const [minimizedWindows, setMinimizedWindows] = useState([]);
+  const [closingWindows, setClosingWindows] = useState([]); // Track windows playing close animation
   const desktopRef = useRef(null);
   const windowIdRef = useRef(0);
 
@@ -472,16 +520,18 @@ export default function Desktop() {
     }
   };
 
-  // Close a window
+  // Close a window — mark as closing first, then remove after animation completes
   const closeWindow = (id) => {
-    // Also remove from minimized windows if it was minimized
-    setMinimizedWindows((prev) => prev.filter((windowId) => windowId !== id));
+    // If already closing, ignore
+    if (closingWindows.includes(id)) return;
 
-    setWindows((prevWindows) => prevWindows.filter((w) => w.id !== id));
+    // Mark the window as closing so the exit animation plays
+    setClosingWindows((prev) => [...prev, id]);
 
     if (activeWindowId === id) {
-      // Set the highest z-index window as active
-      const remainingWindows = windows.filter((w) => w.id !== id);
+      const remainingWindows = windows.filter(
+        (w) => w.id !== id && !closingWindows.includes(w.id)
+      );
       if (remainingWindows.length > 0) {
         const highestWindow = remainingWindows.reduce((prev, current) =>
           prev.zIndex > current.zIndex ? prev : current
@@ -491,6 +541,13 @@ export default function Desktop() {
         setActiveWindowId(null);
       }
     }
+
+    // Delay actual removal to let the exit animation play
+    setTimeout(() => {
+      setMinimizedWindows((prev) => prev.filter((windowId) => windowId !== id));
+      setClosingWindows((prev) => prev.filter((windowId) => windowId !== id));
+      setWindows((prevWindows) => prevWindows.filter((w) => w.id !== id));
+    }, 300);
   };
 
   // Focus a window (bring to front)
@@ -561,23 +618,24 @@ export default function Desktop() {
 
         {/* Windows */}
         <div className="windows-container">
-          <AnimatePresence>
-            {windows.map((window) => (
+          <AnimatePresence mode="popLayout">
+            {windows.map((win) => (
               <Window
-                key={window.id}
-                id={window.id}
-                title={window.title}
-                initialPosition={window.position}
-                initialSize={window.size}
-                isActive={window.id === activeWindowId}
-                isMinimized={minimizedWindows.includes(window.id)}
-                zIndex={window.zIndex}
+                key={win.id}
+                id={win.id}
+                title={win.title}
+                initialPosition={win.position}
+                initialSize={win.size}
+                isActive={win.id === activeWindowId}
+                isMinimized={minimizedWindows.includes(win.id)}
+                isClosing={closingWindows.includes(win.id)}
+                zIndex={win.zIndex}
                 onFocus={focusWindow}
                 onClose={closeWindow}
                 onMinimize={minimizeWindow}
                 onRestore={restoreWindow}
               >
-                {window.component}
+                {win.component}
               </Window>
             ))}
           </AnimatePresence>

@@ -107,9 +107,7 @@ const fileSystem = {
     type: "folder",
     name: "Projects",
     items: [
-      { name: "WebDev", type: "folder" },
-      { name: "README.md", type: "file" },
-      { name: "todo-app", type: "folder" },
+      { name: "NoProjectsForNowComeBackLater", type: "folder" },
     ],
   },
 };

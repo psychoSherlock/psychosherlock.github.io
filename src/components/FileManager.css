@@ -187,6 +187,7 @@
   cursor: pointer;
   overflow: hidden;
   border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .file-item:hover {
