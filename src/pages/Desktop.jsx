@@ -641,6 +641,22 @@ export default function Desktop() {
           </AnimatePresence>
         </div>
 
+        {/* Version Number */}
+        <div 
+          className="desktop-version" 
+          style={{ 
+            position: "absolute", 
+            bottom: "10px", 
+            right: "20px", 
+            color: "rgba(255, 255, 255, 0.3)", 
+            fontSize: "12px",
+            pointerEvents: "none",
+            zIndex: 10
+          }}
+        >
+          V03.11
+        </div>
+
         {/* macOS Dock */}
         <div className="dock">
           <div className="dock-container">

@@ -122,6 +122,9 @@ export default function Boot() {
 
           <div className="boot-menu">
             <h2 className="boot-title">GRUB BOOTLOADER</h2>
+            <div className="boot-dev-message" style={{ color: "#ff5c5c", fontSize: "0.8rem", marginBottom: "10px", textAlign: "center" }}>
+              [NOTICE] THIS WEBSITE IS STILL IN DEVELOPMENT
+            </div>
             {autoBootEnabled && (
               <div className="boot-timer">Booting in {timeLeft} seconds...</div>
             )}
