@@ -11,6 +11,9 @@ import meCowboy from "../assets/images/personal/me_cowboy.jpeg";
 import meHacker from "../assets/images/personal/me-hacker.jpg";
 import mePortrait from "../assets/images/personal/me.jpeg";
 
+// Import more personal images if they exist
+const meHackerAlt = meHacker; 
+
 // Import PDF files from Documents folder
 import appreciationPdf from "../assets/Documents/April 2023 - Note of Appreciation .pdf";
 import resumePdf from "../assets/Documents/ATHULPRAKASHNJ_RESUME.pdf";
@@ -228,6 +231,7 @@ const getImagePath = (path, filename) => {
     "me_cowboy.jpeg": meCowboy,
     "me-hacker.jpg": meHacker,
     "me.jpeg": mePortrait,
+    "me-hacker.jpg": meHackerAlt,
     "kali_2.png": kali2Img,
     "aot.jpg": aotImg,
     "masks.jpg": masksImg,

@@ -12,6 +12,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "deploy:live": "gh-pages -d dist -b live  --remote live",
+    "deploy:os-live": "gh-pages -d dist -b os-live --remote live",
     "generate-fs": "node scripts/generateFileSystemData.js"
   },
   "dependencies": {
