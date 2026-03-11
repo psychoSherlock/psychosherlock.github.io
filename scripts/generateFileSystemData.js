@@ -21,54 +21,56 @@ const folderMappings = [
     name: "Wallpappers",
   },
   {
-    realPath: "images/personal",
-    virtualPath: "/home/user/Pictures/Personal",
-    name: "Personal",
+  realPath: "images/personal",
+  virtualPath: "/home/user/Pictures/Personal",
+  name: "Personal",
   },
   {
-    realPath: "images/achievements",
-    virtualPath: "/home/user/Pictures/Achievements",
-    name: "Achievements",
+  realPath: "images/achievements",
+  virtualPath: "/home/user/Pictures/Achievements",
+  name: "Achievements",
   },
-];
+  ];
 
-function scanDirectory(dirPath, virtualBasePath) {
+  function scanDirectory(dirPath, virtualBasePath) {
   const result = {};
 
   function scan(currentPath, currentVirtualPath) {
-    if (!fs.existsSync(currentPath)) {
-      console.warn(`Path does not exist: ${currentPath}`);
-      return;
-    }
-
-    const items = fs.readdirSync(currentPath, { withFileTypes: true });
-    const folderItems = [];
-
-    items.forEach((item) => {
-      if (item.name.startsWith(".")) return; // Skip hidden files
-
-      const itemPath = path.join(currentPath, item.name);
-      const itemVirtualPath = `${currentVirtualPath}/${item.name}`;
-
-      if (item.isDirectory()) {
-        folderItems.push({ name: item.name, type: "folder" });
-        scan(itemPath, itemVirtualPath);
-      } else {
-        folderItems.push({ name: item.name, type: "file" });
-      }
-    });
-
-    result[currentVirtualPath] = {
-      type: "folder",
-      name: path.basename(currentVirtualPath),
-      items: folderItems,
-    };
+  if (!fs.existsSync(currentPath)) {
+    console.warn(`Path does not exist: ${currentPath}`);
+    return;
   }
 
-  scan(dirPath, virtualBasePath);
-  return result;
-}
+  const items = fs.readdirSync(currentPath, { withFileTypes: true });
+  const folderItems = [];
 
+  items.forEach((item) => {
+    if (item.name.startsWith(".")) return; // Skip hidden files
+
+    const itemPath = path.join(currentPath, item.name);
+    const itemVirtualPath = `${currentVirtualPath}/${item.name}`;
+
+    if (item.isDirectory()) {
+      folderItems.push({ name: item.name, type: "folder" });
+      // Recursively scan subdirectories and merge their results
+      const subResults = scan(itemPath, itemVirtualPath);
+      Object.assign(result, subResults);
+    } else {
+      folderItems.push({ name: item.name, type: "file" });
+    }
+  });
+
+  result[currentVirtualPath] = {
+    type: "folder",
+    name: path.basename(currentVirtualPath),
+    items: folderItems,
+  };
+
+  return result;
+  }
+
+  return scan(dirPath, virtualBasePath);
+  }
 // Build the complete file system
 const fileSystem = {
   "/home/user": {

@@ -654,7 +654,7 @@ export default function Desktop() {
             zIndex: 10
           }}
         >
-          V03.11
+          V03.11.1
         </div>
 
         {/* macOS Dock */}

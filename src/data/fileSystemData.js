@@ -68,8 +68,7 @@ const fileSystemData = {
       {
         "name": "NoProjectsForNowComeBackLater",
         "type": "folder"
-      },  
-      
+      }
     ]
   },
   "/home/user/Documents": {

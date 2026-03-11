@@ -191,26 +191,32 @@ const isPdfFile = (filename) => {
 // Helper to dynamically resolve asset paths
 const getAssetPath = (virtualPath, filename) => {
   const pathMap = {
-    "/home/user/Pictures/Achievements": "../assets/images/achievements",
-    "/home/user/Pictures/Wallpappers": "../assets/images/Wallpappers",
-    "/home/user/Pictures/Personal": "../assets/images/personal",
-    "/home/user/Documents": "../assets/Documents",
+    "/home/user/Pictures/Achievements": "images/achievements",
+    "/home/user/Pictures/Wallpappers": "images/Wallpappers",
+    "/home/user/Pictures/Personal": "images/personal",
+    "/home/user/Documents": "Documents",
   };
 
-  for (const [vPath, assetPath] of Object.entries(pathMap)) {
+  for (const [vPath, assetSubPath] of Object.entries(pathMap)) {
     if (virtualPath.startsWith(vPath)) {
-      const subPath = virtualPath.replace(vPath, "").replace(/^\//, "");
-      const fullPath = subPath
-        ? `${assetPath}/${subPath}/${filename}`
-        : `${assetPath}/${filename}`;
+      // Get the relative path inside the specific asset folder
+      // e.g., if vPath is /home/user/Pictures/Achievements and virtualPath is /home/user/Pictures/Achievements/ExploitX
+      // then relativeSubPath is "ExploitX"
+      const relativeSubPath = virtualPath.slice(vPath.length).replace(/^\//, "");
+      
+      // Construct the key for allAssets glob
+      // allAssets keys look like "../assets/images/achievements/ExploitX/image.jpg"
+      const fullAssetPath = relativeSubPath 
+        ? `../assets/${assetSubPath}/${relativeSubPath}/${filename}`
+        : `../assets/${assetSubPath}/${filename}`;
 
-      // Look up in the glob-loaded assets
-      const asset = allAssets[fullPath];
-      if (asset) {
-        return asset;
+      const asset = allAssets[fullAssetPath];
+      if (asset) return asset;
+      
+      // Debug log if asset not found in Achievements to help diagnose
+      if (vPath.includes("Achievements")) {
+        // console.log(`Looking for: ${fullAssetPath} - Not found`);
       }
-
-      console.warn(`Asset not found in glob: ${fullPath}`);
     }
   }
   return null;
